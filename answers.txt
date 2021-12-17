@@ -2,3 +2,5 @@
 
 1.) Describe the functionality of server.c and client.c in <100 words:
     
+2.) 
+    
