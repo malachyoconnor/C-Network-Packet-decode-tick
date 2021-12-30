@@ -1,6 +1,12 @@
 
 
 1.) Describe the functionality of server.c and client.c in <100 words:
-    
+    client.c connects to the server, reads the message 
+    the server is sending and writes it to a file. Once the file
+    has been read, the client disconnects.
+    server.c reads a file to serve, accepts connections from
+    clients and sends them the file via a stream. Once the file has 
+    been send it closes the connection on the socket.
+
 2.) 
-    
+    THINK I DID THIS ALREADY
