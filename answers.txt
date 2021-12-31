@@ -11,6 +11,8 @@
 2.) Find and list three programming errors in the code
     server.c line 20: "if (argc != 2)" Should be "if (argc != 3)" as argc is 1+the number of arguments,
     and in this case there are 2.
-    client.c line 19: "perror("Usage: client <host> <port>");" should be "puts("Usage: client <host> <port>");"
+
+    server.c line line 59 changed "int r,w;" to "int r=0, w=0;" as using the uninitialized int w later in the code can have undefined behaviour 
+    
     server.c line 77: Missing closing bracket of main function
 

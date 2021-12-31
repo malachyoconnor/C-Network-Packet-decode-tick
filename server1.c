@@ -65,18 +65,23 @@ int main(int argc, char *argv[])
             perror("Error accepting a client connection");
             return 6;
         }
-        
+        printf("Accepted a connection \n");
         // While not at the end of the file
         while (!feof(fp))
         {
             char bytes[BUFSIZE];
-            int r, w;
-            // Read from the input stream fp into bytes
+            int r=0, w=0;
+            // Read from the file stream fp into bytes
             r = fread(bytes, sizeof(char), BUFSIZE, fp);
+
+            // printf("%i\n%i\n", w, r);
 
             while (w < r)
             {
                 // Write to the user, the items in bytes
+                printf("Sending ");
+                printf(bytes);
+                printf("\n");
                 int total = write(connfd, bytes, r);
                 if (total < 0)
                 {
