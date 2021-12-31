@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
   int listenfd, connfd;
   FILE *fp;
   struct sockaddr_in server;
-
+  
   if (argc != 2) {
     puts("Usage: server <port> <file>");
     return 1;
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
   server.sin_family = AF_INET;
   server.sin_addr.s_addr = htonl(INADDR_ANY);
   server.sin_port = htons(atoi(argv[1]));
-
+  
   if ((listenfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
     perror("Cannot create server socket");
     return 3;
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
       }
     }
     fseek(fp,0,SEEK_SET);
-
+    
     close(connfd);
 
     return 0;

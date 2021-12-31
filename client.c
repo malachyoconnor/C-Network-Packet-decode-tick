@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
 
   int sockfd;
   struct sockaddr_in servaddr;
-
+  
   if (argc != 3) {
     perror("Usage: client <host> <port>");
     return 1;
