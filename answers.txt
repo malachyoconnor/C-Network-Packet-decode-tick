@@ -8,4 +8,4 @@
     clients and sends them the file via a stream. Once the file has 
     been send it closes the connection on the socket.
 2.) 
-    
+    THINK I DID THIS ALREADY
