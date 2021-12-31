@@ -7,5 +7,10 @@
     server.c reads a file to serve, accepts connections from
     clients and sends them the file via a stream. Once the file has 
     been send it closes the connection on the socket.
-2.) 
-    THINK I DID THIS ALREADY
+
+2.) Find and list three programming errors in the code
+    server.c line 20: "if (argc != 2)" Should be "if (argc != 3)" as argc is 1+the number of arguments,
+    and in this case there are 2.
+    client.c line 19: "perror("Usage: client <host> <port>");" should be "puts("Usage: client <host> <port>");"
+    server.c line 77: Missing closing bracket of main function
+
