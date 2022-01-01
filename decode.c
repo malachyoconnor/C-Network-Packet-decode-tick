@@ -59,39 +59,6 @@ void printBits(size_t const size, void const * const ptr)
     puts("\n");
 }
 
-void reverseEndian(int size, void const * const ptr) {
-    int elem_sizes[] = {4, 4, 8, 16,  16, 16,  8, 8, 16,  32,  32,  24, 8};
-    unsigned int *b = (unsigned int*) ptr;
-
-    
-    for (int current_int = 0; current_int < size/4; current_int++) {
-        
-        unsigned int doubleword = b[current_int];
-        unsigned int result = 0, traversed = 0;
-
-        for (int size_index = 0; size_index < sizeof(elem_sizes) / sizeof(elem_sizes[0]); size_index++) {
-            // If we've done a 32 bit chunk, go to the next chunk
-            if (traversed >= 32) break;
-            int elem_size = elem_sizes[size_index];
-
-            for (int bit_index = elem_size-1; bit_index >= 0; bit_index--) {
-
-                int bit = (doubleword >> (traversed + bit_index)) & 1;
-                // printf("%i", bit);
-                
-                result = result | (bit << traversed + elem_size-1-bit_index);
-            }
-            traversed += elem_size;
-            elem_sizes[size_index] = 0;
-        
-        }
-        // puts("");
-
-        b[current_int] = result;
-
-    }
-}
-
 int main(int argc, char *argv[]) {
 
     int test[] = {1,2,3,4};
@@ -108,14 +75,6 @@ int main(int argc, char *argv[]) {
     int r;
     r = fread(try, 24, 24, fp);
 
-    printf("%x", try->packet_length);
-    puts("");
-    printf("%x", try->version);
-    puts("");
-
-    reverseEndian(24, try);
-
-    
     printf("%x", try->packet_length);
     puts("");
     printf("%x", try->version);
