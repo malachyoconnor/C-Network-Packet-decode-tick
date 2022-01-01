@@ -4,3 +4,7 @@ testing.exe
 client1.exe
 server1.exe
 .vscode/c_cpp_properties.json
+decode.c
+temp.txt
+decode.exe
+decode.exe

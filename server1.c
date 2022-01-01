@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
     // Setting the type of address, the address and the port
     // for the server
     server.sin_family = AF_INET;
+    
     server.sin_addr.s_addr = htonl(INADDR_ANY);
     // htons reverses the BYTE order, atoi converts a string to an int
     // "123" -> 123
