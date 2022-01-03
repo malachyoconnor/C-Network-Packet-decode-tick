@@ -37,18 +37,19 @@ void reverseEndianness(const int size, void const * const ptr) {
     memcpy(b, result, size);
 }    
 
-void testReverseEndianness(const int size, void const * const ptr) {
+void reverseBytes(const int size, void const * const ptr) {
 
     unsigned char *b = (unsigned char*) ptr;
     unsigned char result[size];
 
-    for (int word = 0; word < size / 4; word++) {
-        
-        for (int char_ind = 0; char_ind < 4; char_ind++)
-
-            result[4 * word + 3 - char_ind] = b[4 * word + char_ind];
+    for (int char_ind = 0; char_ind < size; char_ind ++) {
+        char byte = 0;
+        for (int bit = 0; bit < 8; bit++) {
+            char bit_value = 1 & (b[char_ind] >> (bit));
+            byte = byte | (bit_value << (7-bit));
+        }
+        result[char_ind] = byte;
     }
-
     memcpy(b, result, size);
 }    
 
@@ -59,8 +60,10 @@ typedef struct {
     unsigned int sequence_number;
     
     unsigned int acknowledgement_number;
-     
-    unsigned int unneeded1;
+    
+    unsigned char data_offset : 4;
+    unsigned int unneeded1 : 12;
+    unsigned short window;
 
     unsigned int unneeded2;
 
@@ -73,12 +76,11 @@ typedef struct {
     unsigned char final_padding;
 
     unsigned int data;
-    // ensures extra padding not added    
 } TCP_header;
 
 typedef struct {
     unsigned int version: 4;
-    unsigned int length: 4;
+    unsigned int length: 4; 
     unsigned char TOS;
     unsigned short packet_length;
     // Not using
@@ -92,86 +94,80 @@ typedef struct {
     unsigned int source_ip;
 
     unsigned int destination_ip;
-    // Not using
     unsigned int* options;
-    // ensures extra padding not added    
 } IP_header;
 
-IP_header populate_ip_header(IP_header* result, const char* input, int length) {
+unsigned short chars_to_short(short a, short b) {
+    return (((short) a)<<8) | b;
+}
 
+unsigned short chars_to_int(char a, char b, char c, char d) {
+    return (((int) a)<<24)  | (((int) b)<<16)  | (((int) c)<<8) | b;
+}
 
-    // Copy the lines of the header we're sure will be present
-    memcpy(result, input, 4 * 5);
-    printBits(20, input);
-    testReverseEndianness(20, result);
-    printBits(20, result);
+char* read_file(FILE* fp) {
+    char* storage = malloc(BUFSIZE);
+    int position = 0;
 
+    while (!feof(fp)) {
+        if (position != 0) 
+            storage = realloc(storage, BUFSIZE + position);
 
-    result->version = 15;
-    result->length = 10;
-    printBits(sizeof(IP_header), result);
+        char buffer[BUFSIZE] = {0};
+        int r = fread(buffer, 1, BUFSIZE, fp);
+
+        for (int i=0; i<r; i++) {
+            storage[position + i] = buffer[i];
+        }
+        position += BUFSIZE;
+    }
+    return storage;
+}
+
+void populate_ip_header(IP_header* result, const char* input) {
+
+    result->version = input[0]>>4;
+    result->length = input[0];
+    result->packet_length = chars_to_short(input[2], input[3]);
+    result->source_ip = chars_to_int(input[15], input[16], input[17], input[18]);
+    result->destination_ip = chars_to_int(input[19], input[20], input[21], input[22]);
+    
+
+    if (result->length > 5) {
+
+        int *buffer = malloc(result->length - 5);
+
+        for (int line = 6; line <= result->length; line++) {
+            buffer[line-6] = chars_to_int(input[4*line], input[4*line+1], 
+                                          input[4*line+2], input[4*line+3]);
+        }
+        result->options = buffer;
+    }
 
 }
 
+void populate_tcp_header(TCP_header* result, const char* input) {
+    result->data_offset = input[12]>>4;
+    result->window = chars_to_short(input[14], input[15]);
+}
+
+
+
 int main(int argc, char *argv[]) {
 
-    FILE *fp;
-    const char* filename = "message1";
-
-    if ((fp = fopen(filename, "rb")) == 0) {
-        perror("Cannot find file read");
-        return 1;
-    }
+    const char* filename = "message4";
+    FILE *fp = fopen(filename, "rb");
+    unsigned char* file_store = read_file(fp);
 
     IP_header* ip_ex;
     TCP_header* tcp_ex;
 
-    fseek(fp, 0L, SEEK_END);
-    int file_size = ftell(fp);
-    rewind(fp);
-
-    unsigned char file_store[10000];
-    int r = fread(file_store, file_size, 1, fp);
-
-    unsigned char file_store2[file_size+1];
-
-    for (int i = 0; i < file_size; i++) {
-        file_store2[file_size - i -1 ] = file_store[i];
-    }
-
-    // 
-    
-    
-
-    populate_ip_header(ip_ex, file_store2, sizeof(IP_header));
+    populate_ip_header(ip_ex, file_store);
 
     
-    // TODO:
-        // We know the ip header is at least 5 32 bit lines
-        // so load them first initialize rest to zero
-        // Only get everything we need once we get the length
-        // okay!
+  
 
-
-
-    // fflush(stdout);
-
-    // memcpy(ip_ex, file_store, 24);
-
-
-    // printf("version: %d\n", ip_ex->version);
-    
-    // printf("Source ip: ");
-    // printIP(ip_ex->source_ip);
-    // printf("Destination ip: ");
-    // printIP(ip_ex->destination_ip);
-    
-    // r = fread(tcp_ex, sizeof(struct TCP_header), 1, fp);
-    // 
-    // printf("source_port: %d\n", tcp_ex->source_port);
-    // printf("destination_port: %d\n", tcp_ex->destination_port);
-
-
+    free(file_store);
     return 0;
 }
 
