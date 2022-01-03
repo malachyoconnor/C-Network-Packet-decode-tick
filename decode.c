@@ -26,33 +26,6 @@ void printBits(size_t const size, void const * const ptr)
     puts("\n");
 }
 
-void reverseEndianness(const int size, void const * const ptr) {
-
-    unsigned char *b = (unsigned char*) ptr;
-    unsigned char result[size];
-
-    for (int char_num=0; char_num < size; char_num++) {
-        result[size - char_num - 1] = b[char_num];
-    }
-    memcpy(b, result, size);
-}    
-
-void reverseBytes(const int size, void const * const ptr) {
-
-    unsigned char *b = (unsigned char*) ptr;
-    unsigned char result[size];
-
-    for (int char_ind = 0; char_ind < size; char_ind ++) {
-        char byte = 0;
-        for (int bit = 0; bit < 8; bit++) {
-            char bit_value = 1 & (b[char_ind] >> (bit));
-            byte = byte | (bit_value << (7-bit));
-        }
-        result[char_ind] = byte;
-    }
-    memcpy(b, result, size);
-}    
-
 typedef struct {
     unsigned short source_port;
     unsigned short destination_port;
