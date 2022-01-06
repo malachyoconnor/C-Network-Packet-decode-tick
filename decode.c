@@ -48,7 +48,7 @@ typedef struct {
     unsigned int options : 24;
     unsigned char final_padding;
 
-    unsigned int data;
+    unsigned int* data;
 } TCP_header;
 
 typedef struct {
@@ -94,22 +94,20 @@ char* read_file(FILE* fp) {
         }
         position += BUFSIZE;
     }
+    printf("%i\n", position+BUFSIZE);
     return storage;
 }
 
 void populate_ip_header(IP_header* result, const char* input) {
-
     result->version = input[0]>>4;
     result->length = input[0];
+    // Remember, packet length is the entire length in 8 byte blocks
     result->packet_length = chars_to_short(input[2], input[3]);
     result->source_ip = chars_to_int(input[15], input[16], input[17], input[18]);
     result->destination_ip = chars_to_int(input[19], input[20], input[21], input[22]);
     
-
     if (result->length > 5) {
-
         int *buffer = malloc(result->length - 5);
-
         for (int line = 6; line <= result->length; line++) {
             buffer[line-6] = chars_to_int(input[4*line], input[4*line+1], 
                                           input[4*line+2], input[4*line+3]);
@@ -122,6 +120,11 @@ void populate_ip_header(IP_header* result, const char* input) {
 void populate_tcp_header(TCP_header* result, const char* input) {
     result->data_offset = input[12]>>4;
     result->window = chars_to_short(input[14], input[15]);
+
+    if (result->window > 0) {
+        result->data = malloc(result->window);
+        memcpy(result->data, &input[4 * (result->data_offset)], result->window);
+    }
 }
 
 
@@ -132,12 +135,19 @@ int main(int argc, char *argv[]) {
     FILE *fp = fopen(filename, "rb");
     unsigned char* file_store = read_file(fp);
 
-    IP_header* ip_ex;
-    TCP_header* tcp_ex;
+    IP_header ip_ex = {0};
+    TCP_header tcp_ex = {0};
 
-    populate_ip_header(ip_ex, file_store);
+    populate_ip_header(&ip_ex, file_store);
+    populate_tcp_header(&tcp_ex, &file_store[4 * (ip_ex.length)]);
 
+    printf("IP packet length: %i\n", ip_ex.packet_length);
+    printf("IP header length: %i\n", ip_ex.length);
     
+    printf("Size of TCP header: %i\n", tcp_ex.data_offset);
+    printf("Amount of data: %i\n", tcp_ex.window/2);
+    
+    // cant be right
   
 
     free(file_store);
