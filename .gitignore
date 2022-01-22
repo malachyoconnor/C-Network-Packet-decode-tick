@@ -9,3 +9,8 @@ temp.txt
 decode.exe
 decode.exe.stackdump
 testing.cpp
+temp.exe
+.vscode/launch.json
+.vscode/tasks.json
+pcolparse.exe
+temp.c
