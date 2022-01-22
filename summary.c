@@ -1,7 +1,7 @@
+#include "pcolparse.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "pcolparse.h"
 
 void print_ip(int ip[], int len, const char* text_to_print) {
     printf(text_to_print);
@@ -10,11 +10,13 @@ void print_ip(int ip[], int len, const char* text_to_print) {
     printf("%d ", ip[len-1]);
 }
 
-void print_log_attributes() {
-    print_ip(source_ip, 4, "");
-    print_ip(destination_ip, 4, "");
-    printf("%d ", first_ip_header_len);
-    printf("%d ", first_ip_packet_len*4);
-    printf("%d ", first_tcp_header_len);
-    printf("%d ", num_ip_packets);
+
+int main (int argv, char* argc) {
+    result_store result = get_log_attributes("message1");
+    print_ip(result.source_ip, 4, "");
+    print_ip(result.destination_ip, 4, "");
+    printf("%d ", result.first_ip_header_len);
+    printf("%d ", result.first_ip_packet_len*4);
+    printf("%d ", result.first_tcp_header_len);
+    printf("%d ", result.num_ip_packets);
 }
