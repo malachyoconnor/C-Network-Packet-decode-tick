@@ -7,18 +7,10 @@ unsigned short chars_to_short(short a, short b) {
     return (((short) a)<<8) | b;
 }
 
-void print_ip(int ip[], int len, const char* text_to_print) {
-    printf(text_to_print);
-    for (int i = 0; i < len-1; i++)
-        printf("%d.", ip[i]);
-    printf("%d ", ip[len-1]);
-}
+void get_log_attributes(char* message) {
 
-int main(int argc, char *argv[]) {
-
-    // const char* filename = "message1";
     FILE* fp;
-    fp = fopen("message1", "rb");
+    fp = fopen(message, "rb");
 
     fseek(fp, 0, SEEK_END);
     long file_size = ftell(fp);
@@ -31,7 +23,7 @@ int main(int argc, char *argv[]) {
     int first_ip_packet_len;
     int first_ip_header_len;
     int first_tcp_header_len;
-    int num_ip_packets;
+    int num_ip_packets=0;
 
     for (int i=0; i<4; i++) {
         source_ip[i] = file_store[13+i];
@@ -42,20 +34,10 @@ int main(int argc, char *argv[]) {
     first_ip_header_len = (file_store[0] & 15); // Get the first 4 bits
     first_tcp_header_len = file_store[first_ip_header_len * 4 + 12]>>4;
                                 
-    short index = 0, NumberIPPackets = 0;
+    short index = 0;
     while (index < file_size) {
-        NumberIPPackets ++;
+        num_ip_packets ++;
         index += chars_to_short(file_store[index + 2] , file_store[index + 3]); //IP Packet length
     }
-
-    print_ip(source_ip, 4, "");
-    print_ip(destination_ip, 4, "");
-    printf("%d ", first_ip_header_len);
-    printf("%d ", first_ip_packet_len*4);
-    printf("%d ", first_tcp_header_len);
-    printf("%d ", NumberIPPackets);
-  
-
-    return 0;
 }
 

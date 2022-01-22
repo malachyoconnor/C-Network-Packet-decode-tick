@@ -8,10 +8,8 @@
 
 
 int main () {
-    int x = htons(10);
-    printf("%i", x);
-    printf("%i", htons(x));
-
+    // short x = chars_to_short((char) 10, (char) 20);
+    printf("%d", 12);
     return 0;
 }
 
