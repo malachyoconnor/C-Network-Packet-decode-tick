@@ -42,11 +42,7 @@ typedef struct {
 
     unsigned int unneeded3;
  
-    unsigned short checksum;
-    unsigned short urgent_pointer;
- 
-    unsigned int options : 24;
-    unsigned char final_padding;
+    unsigned int* options;
 
     unsigned int* data;
 } TCP_header;
@@ -100,19 +96,12 @@ char* read_file(FILE* fp) {
 
 void populate_ip_header(IP_header* result, const char* input) {
 
-
-    int x = 257;
-    printBits(4, &x);
-
-    printf("%i\n", input[0]);
-    printf("%i\n", input[0]>>4);
-
     result->version = input[0]>>4;
     result->length = input[0];
     // Remember, packet length is the entire length in 8 byte blocks
     result->packet_length = chars_to_short(input[2], input[3]);
-    result->source_ip = chars_to_int(input[15], input[16], input[17], input[18]);
-    result->destination_ip = chars_to_int(input[19], input[20], input[21], input[22]);
+    result->source_ip = chars_to_int(input[12], input[13], input[14], input[15]);
+    result->destination_ip = chars_to_int(input[16], input[17], input[18], input[19]);
     
     if (result->length > 5) {
         int *buffer = malloc(result->length - 5);
@@ -142,15 +131,22 @@ int main(int argc, char *argv[]) {
     const char* filename = "message1";
     FILE *fp = fopen(filename, "rb");
     unsigned char* file_store = read_file(fp);
-
     IP_header ip_ex = {0};
     TCP_header tcp_ex = {0};
 
     populate_ip_header(&ip_ex, file_store);
-    printBits(10*4, &file_store);
+    populate_tcp_header(&tcp_ex, &file_store[4 * (ip_ex.length)]);
+
+    printf("Ip header::\n" );
+    printBits(ip_ex.length*4, &file_store[0]);
+
+    printf("TCP header::\n" );
+    printBits(10*4, &file_store[4*ip_ex.length]);
     fflush(stdout);
-    // populate_tcp_header(&tcp_ex, &file_store[4 * (ip_ex.length)]);
     // printBits(10*4, &file_store[4 * (ip_ex.length)]);
+
+    printIP(ip_ex.source_ip);
+    printIP(ip_ex.destination_ip);
 
 
     printf("IP packet length: %i\n", ip_ex.packet_length);
