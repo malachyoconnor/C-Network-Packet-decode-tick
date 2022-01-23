@@ -1,6 +1,6 @@
-pcolmake: pcolparse.c extract.cpp
+pcolmake: pcolparse.c extract.cc
 
 	g++ -c -Wall pcolparse.c
-	g++ -c -Wall extract.cpp
+	g++ -c -Wall extract.cc
 
 	g++ -Wall --pedantic pcolparse.o extract.o -I. -o output

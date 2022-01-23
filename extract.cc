@@ -4,7 +4,7 @@
 #include "pcolparse.h"
 
 int main() {
-    const char* message = "message2";
+    const char* message = "message1";
     result_store result = get_log_attributes(message);
 
     FILE* fp;
@@ -44,7 +44,7 @@ int main() {
         previous_len = total_tcp_data;
     }
 
-    FILE *f = fopen("message2.jpg", "wb");
+    FILE *f = fopen("message1.txt", "wb");
     fwrite(tcp_data, sizeof(char), total_tcp_data, f);
     fclose(f);
 
