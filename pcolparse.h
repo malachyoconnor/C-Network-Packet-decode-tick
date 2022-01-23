@@ -10,7 +10,6 @@ typedef struct Output {
     int num_ip_packets;
 } result_store;
 
-unsigned short chars_to_short(short a, short b);
 result_store get_log_attributes(const char* message);
 
 #endif
