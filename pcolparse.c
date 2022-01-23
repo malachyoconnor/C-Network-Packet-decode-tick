@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 result_store get_log_attributes(const char* message) {
     int source_ip;
     int destination_ip;
@@ -34,5 +33,6 @@ result_store get_log_attributes(const char* message) {
         index += file_store[index + 2]<<8 | file_store[index + 3]; //IP Packet length
     }
     free(file_store);
-    return (result_store) {source_ip, destination_ip, first_ip_packet_len, first_ip_header_len, first_tcp_header_len, num_ip_packets};
+    result_store result = {source_ip, destination_ip, first_ip_packet_len, first_ip_header_len, first_tcp_header_len, num_ip_packets};
+    return result;
 }

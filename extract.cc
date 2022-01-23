@@ -2,12 +2,25 @@
 #include <stdio.h>
 #include <string.h>
 #include "pcolparse.h"
+#include "pcolparse.c"
 
-int main() {
-    const char* message = "message1";
-    result_store result = get_log_attributes(message);
+int main(int argc, char** argv) {
+
+    if(argc != 3){
+        puts("Usage: extract <log source> <decoded file destination> ");
+        return 1;
+    }
 
     FILE* fp;
+    if ((fp = fopen(argv[1], "rb")) == 0) {
+        perror("Cannot find log file.");
+        return 2;
+    }
+
+
+    char* message = argv[1];
+    get_log_attributes(message);
+
     fp = fopen(message, "rb");
 
     fseek(fp, 0, SEEK_END);
@@ -44,7 +57,7 @@ int main() {
         previous_len = total_tcp_data;
     }
 
-    FILE *f = fopen("message1.txt", "wb");
+    FILE *f = fopen(argv[2], "wb");
     fwrite(tcp_data, sizeof(char), total_tcp_data, f);
     fclose(f);
 
