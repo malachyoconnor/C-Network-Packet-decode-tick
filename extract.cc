@@ -4,9 +4,8 @@
 #include "pcolparse.h"
 
 int main() {
-    const char* message = "message1";
+    const char* message = "message2";
     result_store result = get_log_attributes(message);
-
 
     FILE* fp;
     fp = fopen(message, "rb");
@@ -16,8 +15,6 @@ int main() {
     rewind(fp);
     unsigned char* file_store = new unsigned char[file_size];
     fread(file_store, sizeof(unsigned char), file_size, fp);
-
-    printf("%li", file_size);
 
     unsigned int index = 0, total_tcp_data=0, ip_header_len=0, packet_len = 0, tcp_header_len=0;
 
@@ -31,16 +28,9 @@ int main() {
     }
     
    
-
-
     unsigned char* tcp_data = new unsigned char[total_tcp_data];
-
-    printf(" total_data: %d ", total_tcp_data);
-    fflush(stdout);
-
     int previous_len = 0;
     index = 0, total_tcp_data=0, ip_header_len=0, packet_len = 0, tcp_header_len=0;
-
 
     while (index < file_size) {
         packet_len = file_store[index + 2]<<8 | file_store[index + 3];
@@ -51,18 +41,13 @@ int main() {
         if (packet_len - ip_header_len - tcp_header_len != 0)
             memcpy(&tcp_data[previous_len], &file_store[index + ip_header_len + tcp_header_len], packet_len - ip_header_len - tcp_header_len);
         index += packet_len;
-        printf("packet len: %u\n", packet_len);
-        printf("ip header len: %u\n", ip_header_len);
-        printf("tcp_header len: %u\n\n", tcp_header_len);
-
-        
         previous_len = total_tcp_data;
     }
 
-
-    FILE *f = fopen("A_OUTPUT.txt", "wb");
+    FILE *f = fopen("message2.jpg", "wb");
     fwrite(tcp_data, sizeof(char), total_tcp_data, f);
     fclose(f);
 
+    delete file_store;
     return 0;
 }
