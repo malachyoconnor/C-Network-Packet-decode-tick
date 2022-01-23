@@ -5,6 +5,9 @@
 unsigned short chars_to_short(short a, short b) {
     return (((short) a)<<8) | b;
 }
+unsigned int chars_to_int(char a, char b, char c, char d) {
+    return (((int) a)<<24)  | (((int) b)<<16)  | (((int) c)<<8) | (int) b;
+}
 
 
 int main(int argc, char *argv[]) {
@@ -19,6 +22,8 @@ int main(int argc, char *argv[]) {
     unsigned char file_store[file_size];
     unsigned long r = fread(file_store, sizeof(unsigned char), file_size, fp);
     
+    int ource_ip = chars_to_int(file_store[13+0], file_store[13+1], file_store[13+2], file_store[13+3]);
+    printf("\n%u\n", ource_ip);
 
     printf("Source IP Address: ");
     for (int i=13; i<13+4; i++) {

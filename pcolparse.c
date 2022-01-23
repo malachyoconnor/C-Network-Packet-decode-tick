@@ -7,11 +7,7 @@ unsigned short chars_to_short(short a, short b) {
     return (((short) a)<<8) | b;
 }
 
-unsigned int chars_to_int(char a, char b, char c, char d) {
-    return ((int) a)<<24  | ((int) b)<<16  | ((int) c)<<8 | (int) b;
-}
-
-result_store get_log_attributes(char* message) {
+result_store get_log_attributes(const char* message) {
     int source_ip;
     int destination_ip;
     int first_ip_packet_len;

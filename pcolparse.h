@@ -11,7 +11,6 @@ typedef struct Output {
 } result_store;
 
 unsigned short chars_to_short(short a, short b);
-unsigned int chars_to_int(char a, char b, char c, char d);
-result_store get_log_attributes(char* message);
+result_store get_log_attributes(const char* message);
 
 #endif
