@@ -7,10 +7,13 @@ unsigned short chars_to_short(short a, short b) {
     return (((short) a)<<8) | b;
 }
 
+unsigned int chars_to_int(char a, char b, char c, char d) {
+    return ((int) a)<<24  | ((int) b)<<16  | ((int) c)<<8 | (int) b;
+}
 
 result_store get_log_attributes(char* message) {
-    int source_ip[4];
-    int destination_ip[4];
+    int source_ip;
+    int destination_ip;
     int first_ip_packet_len;
     int first_ip_header_len;
     int first_tcp_header_len;
@@ -25,10 +28,8 @@ result_store get_log_attributes(char* message) {
     unsigned char file_store[file_size];
     unsigned long r = fread(file_store, sizeof(unsigned char), file_size, fp);
 
-    for (int i=0; i<4; i++) {
-        source_ip[i] = file_store[13+i];
-        destination_ip[i] = file_store[17+i];
-    }
+    memcpy(&source_ip, &file_store[13], 4);
+    memcpy(&destination_ip, &file_store[17], 4);
     first_ip_packet_len = chars_to_short(file_store[2], file_store[3]);
     first_ip_header_len = (file_store[0] & 15); // Get the first 4 bits
     first_tcp_header_len = file_store[first_ip_header_len * 4 + 12]>>4;
