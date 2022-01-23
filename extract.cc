@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "pcolparse.h"
-#include "pcolparse.c"
 
 int main(int argc, char** argv) {
 

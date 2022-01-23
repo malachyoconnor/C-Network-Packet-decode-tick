@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "pcolparse.h"
-#include "pcolparse.c"
 
 void print_ip(int* ip, int len, const char* text_to_print) {
     printf(text_to_print);

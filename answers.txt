@@ -16,3 +16,5 @@
     
     server.c line 77: Missing closing bracket of main function
 
+3.)
+The browser receives what it thinks is an IP request, but is instead a plaintext file that it cannot decode. 
