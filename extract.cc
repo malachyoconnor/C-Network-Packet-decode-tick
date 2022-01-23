@@ -1,7 +1,9 @@
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
+extern "C" {
 #include "pcolparse.h"
+}
 
 int main(int argc, char** argv) {
 
