@@ -18,3 +18,10 @@ pcolparse.c
 testing.c
 summary.exe
 extract.exe
+A_message1.txt
+A_OUTPUT.txt
+extract.o
+output.exe
+pcolparse.o
+test.txt
+.vscode/c_cpp_properties.json
